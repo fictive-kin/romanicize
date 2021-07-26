@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+
+
+import sys
+import romanicize
+
+
+USAGE = '''
+Usage: romanicize [integer|numeral]
+
+Convert an integer into a Roman numeral or vice-versa
+'''
+
+
+def abort(include_usage: bool = False):
+    """ Aborts execution, optional including the usage text """
+
+    if include_usage:
+        print(USAGE)
+
+    sys.exit(1)
+
+
+if __name__ == "__main__":
+    if not sys.argv:
+        abort(True)
+
+    arg = sys.argv[1]
+
+    try:
+        if arg == str(int(arg)):
+            # The argument was an integer, convert it
+            print(romanicize.to_numeral(int(arg)))
+
+    except ValueError:
+        print(romanicize.to_int(arg))
