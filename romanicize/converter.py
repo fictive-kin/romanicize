@@ -4,8 +4,6 @@ romanicize.converter
 These are the 2 core conversion functions
 """
 
-import typing
-
 from .constants import (
     LETTERS_TO_NUMERALS,
     BASE_INTEGERS,
