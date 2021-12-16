@@ -16,11 +16,11 @@ from .constants import (
 def to_numeral(integer) -> str:
     """ Convert an integer to a Roman numeral. """
 
-    if not isinstance(integer, int):
-        raise ValueError('Provided integer was not an integer: %s %s' % (integer, type(integer)))
+    if not isinstance(integer, int) or isinstance(integer, bool):
+        raise ValueError(f'Provided integer was not an integer: {integer} {type(integer)}')
 
     if not 0 < integer <= MAX_INTEGER:
-        raise ValueError("Integer must be between 1 and %d" % (MAX_INTEGER))
+        raise ValueError(f"Integer must be between 1 and {MAX_INTEGER}")
 
     # Numbers 4000 and above use a vinculum (aka: overline) above a standard letter, to denote
     # having been multiplied by 1000. However, this is difficult to produce easily with a
@@ -65,7 +65,7 @@ def to_int(numeral) -> int:
     """ Convert a Roman numeral to an integer. """
 
     if not isinstance(numeral, str):
-        raise ValueError('Provided numeral was not a string: %s %s' % (numeral, type(numeral)))
+        raise ValueError(f'Provided numeral was not a string: {numeral} {type(numeral)}')
 
     numeral = numeral.upper()
 
@@ -85,10 +85,10 @@ def to_int(numeral) -> int:
                 integer += value
 
         except KeyError as exc:
-            raise ValueError('Provided numeral is not a valid Roman numeral: %s' % numeral) from exc
+            raise ValueError(f'Provided numeral is not a valid Roman numeral: {numeral}') from exc
 
     # easiest test for validity...
     if to_numeral(integer) != numeral:
-        raise ValueError('Provided numeral is not a valid Roman numeral: %s' % numeral)
+        raise ValueError(f'Provided numeral is not a valid Roman numeral: {numeral}')
 
     return integer
