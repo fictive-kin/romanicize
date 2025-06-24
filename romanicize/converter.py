@@ -4,6 +4,8 @@ romanicize.converter
 These are the 2 core conversion functions
 """
 
+import typing as t
+
 from .constants import (
     LETTERS_TO_NUMERALS,
     BASE_INTEGERS,
@@ -13,11 +15,13 @@ from .constants import (
 )
 
 
-def to_numeral(integer) -> str:
-    """ Convert an integer to a Roman numeral. """
+def to_numeral(integer: int) -> str:
+    """Convert an integer to a Roman numeral."""
 
     if not isinstance(integer, int) or isinstance(integer, bool):
-        raise ValueError(f'Provided integer was not an integer: {integer} {type(integer)}')
+        raise ValueError(
+            f"Provided integer was not an integer: {integer} {type(integer)}"
+        )
 
     if not 0 < integer <= MAX_INTEGER:
         raise ValueError(f"Integer must be between 1 and {MAX_INTEGER}")
@@ -27,15 +31,15 @@ def to_numeral(integer) -> str:
     # standard keyboard. If you wish to support them, be prepared for unicode pain.
 
     numeral = []
-    for (index, num) in enumerate(BASE_INTEGERS):
+    for index, num in enumerate(BASE_INTEGERS):
         count = int(integer / num)
         numeral.append(BASE_NUMERALS[index] * count)
         integer -= num * count
 
-    return ''.join(numeral)
+    return "".join(numeral)
 
 
-def _get_value(string: str, index: int) -> tuple:
+def _get_value(string: str, index: int) -> t.Tuple[int, int]:
     """
     Returns the value of the letter at the specified index, allowing for compound characters
     """
@@ -48,29 +52,28 @@ def _get_value(string: str, index: int) -> tuple:
         return (None, 0)
 
     try:
-        if string[index+1] == OVERLINE:
+        if string[index + 1] == OVERLINE:
             offset = 2
             maybe_compound_letter = maybe_compound_letter + OVERLINE
 
     except IndexError:
         pass
 
-    return (
-        LETTERS_TO_NUMERALS[maybe_compound_letter],
-        offset
-    )
+    return (LETTERS_TO_NUMERALS[maybe_compound_letter], offset)
 
 
-def to_int(numeral) -> int:
-    """ Convert a Roman numeral to an integer. """
+def to_int(numeral: str) -> int:
+    """Convert a Roman numeral to an integer."""
 
     if not isinstance(numeral, str):
-        raise ValueError(f'Provided numeral was not a string: {numeral} {type(numeral)}')
+        raise ValueError(
+            f"Provided numeral was not a string: {numeral} {type(numeral)}"
+        )
 
     numeral = numeral.upper()
 
     integer = 0
-    for (index, char) in enumerate(numeral):
+    for index, char in enumerate(numeral):
         if char == OVERLINE:
             continue
 
@@ -85,10 +88,12 @@ def to_int(numeral) -> int:
                 integer += value
 
         except KeyError as exc:
-            raise ValueError(f'Provided numeral is not a valid Roman numeral: {numeral}') from exc
+            raise ValueError(
+                f"Provided numeral is not a valid Roman numeral: {numeral}"
+            ) from exc
 
     # easiest test for validity...
     if to_numeral(integer) != numeral:
-        raise ValueError(f'Provided numeral is not a valid Roman numeral: {numeral}')
+        raise ValueError(f"Provided numeral is not a valid Roman numeral: {numeral}")
 
     return integer
